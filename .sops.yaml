@@ -1,6 +1,6 @@
 # conf/secrets/.sops.yaml
 # ─────────────────────────────────────────────────────────────────────────────
-# SOPS creation rules — maps secret files to encryption keys.
+# SOPS creation rules - maps secret files to encryption keys.
 #
 # Setup:
 #   1. Generate admin age key (once, on your machine):
@@ -26,8 +26,9 @@ creation_rules:
   - path_regex: conf/secrets/example-host/.*\.yaml$
     key_groups:
       - age:
-          - &admin age1REPLACE_WITH_YOUR_ADMIN_AGE_PUBKEY          # admin machine
-          - &host_example_host age1REPLACE_WITH_HOST_SSH_AGE_PUBKEY # example-host SSH key → age
+          - &admin age1gp8mh9n6txldh6pgppq5pkqds7maea2p92agcy6j4e45t5p9l3xsrl0w2t # admin machine
+          - &host_example_host age1gp8mh9n6txldh6pgppq5pkqds7maea2p92agcy6j4e45t5p9l3xsrl0w2t # TODO: replace after first boot with: ssh-keyscan <host-ip> | ssh-to-age
+
 
   # Template for additional hosts:
   # - path_regex: conf/secrets/<hostname>/.*\.yaml$

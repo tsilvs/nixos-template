@@ -1,7 +1,7 @@
 # Profile identity files - hostname, usernames, IPs.
 # Gitignored on all profiles except the committed example.
 conf/profiles/*/variables.nix
-!conf/profiles/example/variables.nix
+!conf/profiles/example-host/variables.nix
 
 # Build outputs
 dist/

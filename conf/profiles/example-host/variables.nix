@@ -1,6 +1,6 @@
 # conf/profiles/example/variables.nix
 # ─────────────────────────────────────────────────────────────────────────────
-# COMMITTED EXAMPLE PROFILE — safe fake values only.
+# COMMITTED EXAMPLE PROFILE - safe fake values only.
 # Used by CI (builds nixosConfigurations.<hostname>-example).
 # Schema reference for creating real profiles.
 #
@@ -14,7 +14,7 @@
   serverHostname    = "example-host";
   serverDomain      = "example.com";
   serverIface       = "ens3";
-  serverIp          = "203.0.113.1";     # TEST-NET-3 (RFC 5737) — documentation range
+  serverIp          = "203.0.113.1";     # TEST-NET-3 (RFC 5737) - documentation range
   serverPrefix      = 24;
   serverGateway     = "203.0.113.254";
   nameserversPrimary  = [ "9.9.9.9" "149.112.112.112" ];
@@ -23,9 +23,6 @@
   # ── SSH ───────────────────────────────────────────────────────────────────
   permitRootLogin        = "prohibit-password"; # `yes` | `no` | `prohibit-password` | `forced-commands-only`
   passwordAuthentication = false;               # false = pubkey-only (recommended)
-
-  # Extra TCP ports to open beyond 22. Add service ports here.
-  openPorts = [];
 
   # ── Disk ──────────────────────────────────────────────────────────────────
   bootDisk   = "/dev/vda";
@@ -50,7 +47,7 @@
 
   # ── Users ─────────────────────────────────────────────────────────────────
   # passwordFile: path to sops secret at /run/secrets/<name> (set by sops-nix at activation).
-  # Never put plaintext passwords here — they would end up in /nix/store (world-readable).
+  # Never put plaintext passwords here - they would end up in /nix/store (world-readable).
   #
   # Fields:
   #   name              required
@@ -69,7 +66,7 @@
       name             = "admin";
       passwordFile     = "/run/secrets/admin-password";
       passChangePrompt = false;
-      pubkeys          = [ "ssh-ed25519 AAAA...example" ];
+      pubkeys          = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPJpHudMRvzbFWF08VoGgCwY9a2BHZc+qBrgRAIFcqNE admin@example-host" ];
       sudo             = true;
       sudoPasswordRequired = false;
       userGroup        = true;
@@ -128,6 +125,30 @@
     ];
   };
 
+  # ── Network services ──────────────────────────────────────────────────────
+  # net.l7 (IANA protocol defaults: port, transport, external) lives in the
+  # module — not per-host. Override there only if IANA defaults are wrong.
+  net = {
+    # Per-host service instances.
+    # Fields:
+    #   l7        required — IANA protocol name: "http" "https" "ssh" "postgres" "redis" …
+    #   port      override l7 default port
+    #   ip        override bind address; default: external→serverIp, internal→127.0.0.1
+    #   external  override firewall exposure; default inherited from l7 definition
+    services = {
+      # nginx  = { l7 = "https";                  external = true;  };  # port=443 from l7
+      # gitea  = { l7 = "http";  port = 3000;     external = false; };
+      # pg-alt = { l7 = "postgres"; port = 5442;  external = false; };
+    };
+
+    # Reverse proxy path routing.
+    # Values: net.services key. Module resolves name → bind address for upstream.
+    proxy = {
+      # "/"       = "homepage";
+      # "/gitea/" = "gitea";
+    };
+  };
+
   # ── Roles ─────────────────────────────────────────────────────────────────
   # Additive on top of baseline. Each role enables package groups + services.
   # baseline always enabled. Roles are assertion-guarded for mutual exclusion.
@@ -159,7 +180,7 @@
     # all | cli | gui | web | headless (headless = cli + web; canonical server preset)
     uiFilter = "headless";
 
-    # Per-group overrides — take precedence over uiFilter.
+    # Per-group overrides - take precedence over uiFilter.
     groupFilters = {};
 
     # Extra packages by nixpkgs attribute name (dot-separated). Typos → eval-time error.

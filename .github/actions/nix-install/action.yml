@@ -11,7 +11,8 @@ runs:
       # --no-confirm        - non-interactive for CI
       # flakes + nix-command enabled by installer defaults
       # writes nix bin dir to GITHUB_PATH → available in all subsequent steps
+      # --no-start-daemon  - don't require systemd (Docker/act support)
       run: |
         curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
-          | sh -s -- install linux --no-confirm
+          | sh -s -- install linux --no-confirm --no-start-daemon
         . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh

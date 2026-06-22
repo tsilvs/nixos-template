@@ -25,6 +25,23 @@ jobs:
 
       - uses: ./.github/actions/nix-install
 
+      # Auto-format on push to main (not PR).
+      # Runs alejandra in-place, commits + pushes if changes.
+      # continue-on-error: push may fail in local act (no GitHub creds).
+      - name: "Auto-format (main push only)"
+        if: github.event_name == 'push'
+        continue-on-error: true
+        shell: bash
+        run: |
+          nix run nixpkgs#alejandra -- nix/
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add nix/
+            git commit -m "style: auto-format with alejandra [skip ci]"
+            git push || true
+          fi
+
       - uses: ./.github/actions/lint
 
       - uses: ./.github/actions/flake-check

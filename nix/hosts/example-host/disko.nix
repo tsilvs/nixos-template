@@ -10,13 +10,16 @@
 # Disk labels (nixos / boot / ESP / cryptroot) are a provisioning contract
 # with nix/modules/hardware.nix which mounts by label.
 # ─────────────────────────────────────────────────────────────────────────────
-{ lib, vars, ... }:
-let
-  l       = vars.luks or {};
+{
+  lib,
+  vars,
+  ...
+}: let
+  l = vars.luks or {};
   useLuks = l.enable or false;
 in {
   disko.devices.disk.primary = {
-    type   = "disk";
+    type = "disk";
     device = vars.bootDisk;
     content = {
       type = "gpt";
@@ -32,11 +35,11 @@ in {
           size = "512M";
           type = "EF00";
           content = {
-            type         = "filesystem";
-            format       = "vfat";
-            mountpoint   = "/boot/efi";
-            mountOptions = [ "umask=0077" ]; # FAT has no native perms; restrict to root
-            extraArgs    = [ "-n" "ESP" ];
+            type = "filesystem";
+            format = "vfat";
+            mountpoint = "/boot/efi";
+            mountOptions = ["umask=0077"]; # FAT has no native perms; restrict to root
+            extraArgs = ["-n" "ESP"];
           };
         };
 
@@ -46,10 +49,10 @@ in {
         boot = {
           size = "1G";
           content = {
-            type       = "filesystem";
-            format     = "ext4";
+            type = "filesystem";
+            format = "ext4";
             mountpoint = "/boot";
-            extraArgs  = [ "-L" "boot" ];
+            extraArgs = ["-L" "boot"];
           };
         };
 
@@ -57,26 +60,28 @@ in {
         root = {
           size = "100%";
           content =
-            if useLuks then
+            if useLuks
+            then
               ({
-                type                   = "luks";
-                name                   = l.device or "cryptroot";
-                settings.allowDiscards = l.ssd or false;
-                extraFormatArgs        = [ "--label" "cryptroot" ];
-                content = {
-                  type       = "filesystem";
-                  format     = vars.rootFsType;
-                  mountpoint = "/";
-                  extraArgs  = [ "-L" "nixos" ];
-                };
-              # keyFile: path on TARGET before disko runs.
-              # Supply via nixos-anywhere --disk-encryption-keys.
-              } // lib.optionalAttrs (l ? passwordFile) { inherit (l) passwordFile; })
+                  type = "luks";
+                  name = l.device or "cryptroot";
+                  settings.allowDiscards = l.ssd or false;
+                  extraFormatArgs = ["--label" "cryptroot"];
+                  content = {
+                    type = "filesystem";
+                    format = vars.rootFsType;
+                    mountpoint = "/";
+                    extraArgs = ["-L" "nixos"];
+                  };
+                  # keyFile: path on TARGET before disko runs.
+                  # Supply via nixos-anywhere --disk-encryption-keys.
+                }
+                // lib.optionalAttrs (l ? passwordFile) {inherit (l) passwordFile;})
             else {
-              type       = "filesystem";
-              format     = vars.rootFsType;
+              type = "filesystem";
+              format = vars.rootFsType;
               mountpoint = "/";
-              extraArgs  = [ "-L" "nixos" ];
+              extraArgs = ["-L" "nixos"];
             };
         };
       };

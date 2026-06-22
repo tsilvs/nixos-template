@@ -7,7 +7,7 @@
 # secretsFile injected as specialArg from root flake.nix so paths resolve
 # relative to the flake root, not relative to this file.
 # ─────────────────────────────────────────────────────────────────────────────
-{ secretsFile, ... }: {
+{secretsFile, ...}: {
   system.stateVersion = "25.11";
 
   # sops-nix: decrypt secrets from conf/secrets/<hostname>/secrets.yaml
@@ -15,13 +15,13 @@
   #
   # Host identity: uses /etc/ssh/ssh_host_ed25519_key as the age identity
   # (generated on first boot). Matches the age pubkey in conf/secrets/.sops.yaml.
-  sops.defaultSopsFile  = secretsFile;
-  sops.age.sshKeyPaths  = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  sops.defaultSopsFile = secretsFile;
+  sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
 
   # Declare each secret used in variables.nix.
   # Path: /run/secrets/<name>  (default, owned root:root 0400)
-  sops.secrets.admin-password  = {};
-  sops.secrets.wg-private-key  = { mode = "0400"; };
+  sops.secrets.admin-password = {};
+  sops.secrets.wg-private-key = {mode = "0400";};
 
   # initrd SSH host key for LUKS remote unlock.
   # Only relevant when vars.luks.sshUnlock = true.

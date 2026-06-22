@@ -14,16 +14,16 @@
 
   outputs = _: {
     nixosModules.default = {
-      gocryptfs       = _: {};
-      hardening       = _: {};
-      hardware        = _: {};
+      gocryptfs = _: {};
+      hardening = _: {};
+      hardware = _: {};
       luks-ssh-unlock = _: {};
-      network         = _: {};
-      packages        = _: {};
-      roles           = _: {};
-      ssh             = _: {};
-      users           = _: {};
-      vpn             = _: {};
+      network = _: {};
+      packages = _: {};
+      roles = _: {};
+      ssh = _: {};
+      users = _: {};
+      vpn = _: {};
     };
   };
 }

@@ -127,11 +127,11 @@
 
   # ── Network services ──────────────────────────────────────────────────────
   # net.l7 (IANA protocol defaults: port, transport, external) lives in the
-  # module — not per-host. Override there only if IANA defaults are wrong.
+  # module - not per-host. Override there only if IANA defaults are wrong.
   net = {
     # Per-host service instances.
     # Fields:
-    #   l7        required — IANA protocol name: "http" "https" "ssh" "postgres" "redis" …
+    #   l7        required - IANA protocol name: "http" "https" "ssh" "postgres" "redis" …
     #   port      override l7 default port
     #   ip        override bind address; default: external→serverIp, internal→127.0.0.1
     #   external  override firewall exposure; default inherited from l7 definition

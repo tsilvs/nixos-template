@@ -16,7 +16,7 @@ How to create credentials for a host profile.
 age-keygen -o ~/.config/sops/age/<profile>.keys.txt
 ```
 
-Prints: `# Public key: age1...` — save this value.
+Prints: `# Public key: age1...` - save this value.
 
 ---
 
@@ -44,7 +44,7 @@ Editor opens. Define secrets:
 admin-password: yourpasswordhere
 ```
 
-Save and quit — sops encrypts on exit.
+Save and quit - sops encrypts on exit.
 
 ---
 
@@ -77,7 +77,7 @@ users = [
 
 ---
 
-## 6. After first boot — add host SSH key
+## 6. After first boot - add host SSH key
 
 ```bash
 ssh-keyscan <host-ip> | ssh-to-age

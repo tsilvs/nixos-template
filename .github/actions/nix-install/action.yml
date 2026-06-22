@@ -8,7 +8,7 @@ runs:
   steps:
     - name: "Install Nix (Determinate Systems)"
       shell: bash
-      # --no-confirm        — non-interactive for CI
+      # --no-confirm        - non-interactive for CI
       # flakes + nix-command enabled by installer defaults
       # writes nix bin dir to GITHUB_PATH → available in all subsequent steps
       run: |

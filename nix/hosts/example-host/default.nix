@@ -1,7 +1,7 @@
 # nix/hosts/example-host/default.nix
 # ─────────────────────────────────────────────────────────────────────────────
 # Host-specific NixOS configuration.
-# Keep minimal — all logic belongs in nix/modules/.
+# Keep minimal - all logic belongs in nix/modules/.
 # This file: stateVersion + sops secret declarations only.
 #
 # secretsFile injected as specialArg from root flake.nix so paths resolve

@@ -1,9 +1,9 @@
 # nix/hosts/example-host/disko.nix
 # ─────────────────────────────────────────────────────────────────────────────
-# Disk layout — GPT + BIOS boot stub + ESP + /boot + root (optional LUKS).
+# Disk layout - GPT + BIOS boot stub + ESP + /boot + root (optional LUKS).
 # Hybrid layout boots on both legacy BIOS and UEFI VPS hosts.
 #
-# PROVISIONING ONLY — used by nixos-anywhere at install time.
+# PROVISIONING ONLY - used by nixos-anywhere at install time.
 # Never imported by flake.nix or nixos-rebuild switch.
 # nixos-anywhere adds disko.nixosModules.disko externally via nixosModules export.
 #
@@ -21,13 +21,13 @@ in {
     content = {
       type = "gpt";
       partitions = {
-        # GRUB core.img slot — no filesystem; required for GPT + legacy BIOS.
+        # GRUB core.img slot - no filesystem; required for GPT + legacy BIOS.
         bios = {
           size = "1M";
           type = "EF02";
         };
 
-        # EFI System Partition — GRUB EFI loader for UEFI hosts.
+        # EFI System Partition - GRUB EFI loader for UEFI hosts.
         esp = {
           size = "512M";
           type = "EF00";
@@ -40,7 +40,7 @@ in {
           };
         };
 
-        # Plaintext /boot — kernels + initrds outside LUKS so GRUB reads grub.cfg
+        # Plaintext /boot - kernels + initrds outside LUKS so GRUB reads grub.cfg
         # without prompting for passphrase (GRUB cryptomount not emitted for /boot
         # when it is on a separate unencrypted partition).
         boot = {
@@ -53,7 +53,7 @@ in {
           };
         };
 
-        # Root partition — optionally LUKS-wrapped.
+        # Root partition - optionally LUKS-wrapped.
         root = {
           size = "100%";
           content =

@@ -1,7 +1,7 @@
 name: "Flake check"
 description: >
   Evaluates flake against the example profile and builds the system toplevel.
-  No copy step — conf/profiles/example/variables.nix is committed.
+  No copy step - conf/profiles/example/variables.nix is committed.
   CI always targets the *-example nixosConfiguration.
 
 runs:
@@ -26,5 +26,5 @@ runs:
 
     - name: "Optimise Nix store"
       shell: bash
-      # Deduplicates hard links within the job's store — saves space on self-hosted runners.
+      # Deduplicates hard links within the job's store - saves space on self-hosted runners.
       run: nix store optimise

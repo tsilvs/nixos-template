@@ -1,5 +1,5 @@
 {
-  description = "NixOS host template — profile-based identity, sops-nix secrets, zero-copy CI";
+  description = "NixOS host template - profile-based identity, sops-nix secrets, zero-copy CI";
 
   inputs = {
     nixpkgs.url     = "github:NixOS/nixpkgs/nixos-25.11";
@@ -13,7 +13,7 @@
       # Alias for brevity.
       m = nix-modules.nixosModules.default;
 
-      # Shared module list — identical across all host configurations.
+      # Shared module list - identical across all host configurations.
       # disko.nix intentionally absent: used by nixos-anywhere only, never by nixos-rebuild.
       hostModules = hostname: [
         ./nix/hosts/${hostname}/default.nix
@@ -32,8 +32,8 @@
 
       # Build a NixOS configuration for a given hostname + profile.
       #
-      # hostname — subdirectory under nix/hosts/
-      # profile  — subdirectory under conf/profiles/  (must contain variables.nix)
+      # hostname - subdirectory under nix/hosts/
+      # profile  - subdirectory under conf/profiles/  (must contain variables.nix)
       #
       # secretsFile is passed as specialArg so default.nix can reference it
       # without constructing paths relative to nix/hosts/<hostname>/.
@@ -50,8 +50,8 @@
     {
       # ── Configurations ────────────────────────────────────────────────────
       # Convention:
-      #   <hostname>            — real profile (gitignored variables.nix, for the machine itself)
-      #   <hostname>-example    — example profile (committed, CI build target)
+      #   <hostname>            - real profile (gitignored variables.nix, for the machine itself)
+      #   <hostname>-example    - example profile (committed, CI build target)
       #
       # Add one pair of lines per host.
       # ─────────────────────────────────────────────────────────────────────

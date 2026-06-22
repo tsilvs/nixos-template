@@ -1,4 +1,4 @@
-name: "CI — Flake check"
+name: "CI - Flake check"
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
       # sets GITHUB_WORKSPACE, injects GITHUB_TOKEN into credential store.
       - uses: actions/checkout@v4
         with:
-          submodules: false  # submodules fetched in next step via PAT
+          submodules: false # submodules fetched in next step via PAT
 
       - uses: ./.github/actions/submodules
         with:

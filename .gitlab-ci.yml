@@ -1,4 +1,4 @@
-# .gitlab-ci.yml — GitLab CI equivalent of .github/workflows/ci.yml
+# .gitlab-ci.yml - GitLab CI equivalent of .github/workflows/ci.yml
 # Installs Nix manually (Determinate Systems); no cachix dependency.
 # Always builds the example profile (example-host-example).
 
@@ -8,9 +8,9 @@ stages:
 
 variables:
   NIX_CONFIG: "experimental-features = nix-command flakes"
-  GIT_SUBMODULE_STRATEGY: recursive  # fetches submodules; set GIT_SUBMODULE_DEPTH if needed
+  GIT_SUBMODULE_STRATEGY: recursive # fetches submodules; set GIT_SUBMODULE_DEPTH if needed
 
-# Shared Nix install snippet — referenced by both jobs.
+# Shared Nix install snippet - referenced by both jobs.
 .install-nix: &install-nix
   - apt-get update -qq && apt-get install -y -qq curl xz-utils git
   - |

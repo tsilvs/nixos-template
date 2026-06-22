@@ -10,6 +10,8 @@
 
 NixOS host template. Profile-based identity separation, [sops-nix][sops-nix] secrets, zero-copy CI.
 
+## Features
+
 ## Concepts
 
 ### Three-tier data model

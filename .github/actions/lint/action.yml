@@ -1,0 +1,28 @@
+name: "Lint Nix"
+description: >
+  Runs four linters against the nix/ tree:
+    alejandra   — formatter check (no-write mode)
+    deadnix     — unused binding detection
+    statix      — idiomatic Nix patterns (rules configured in statix.toml)
+    ast-grep    — custom structural rules (.ci/lint/nix/rules/)
+
+runs:
+  using: composite
+  steps:
+    - name: "alejandra (format check)"
+      shell: bash
+      run: nix run nixpkgs#alejandra -- --check nix/
+
+    - name: "deadnix (unused bindings)"
+      shell: bash
+      run: nix run nixpkgs#deadnix -- --fail nix/
+
+    - name: "statix (idiomatic Nix)"
+      shell: bash
+      run: nix run nixpkgs#statix -- check .
+
+    - name: "ast-grep (custom rules)"
+      shell: bash
+      # Scans nix/ with project-local structural rules.
+      # Current rules: no-hardcoded-ports (.ci/lint/nix/rules/).
+      run: nix run nixpkgs#ast-grep -- scan --rule .ci/lint/nix/rules/ nix/

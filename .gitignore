@@ -1,0 +1,26 @@
+# Profile identity files — hostname, usernames, IPs.
+# Gitignored on all profiles except the committed example.
+conf/profiles/*/variables.nix
+!conf/profiles/example/variables.nix
+
+# Build outputs
+dist/
+result
+result-*
+
+# Nix direnv shell
+.direnv/
+.envrc
+
+# Env files (allow .example.env)
+*.env
+!*.example.env
+
+# Age private keys — never belong in the repo
+*.age
+age/
+keys.txt
+
+# sops plaintext exports (sops -d ... > file.dec)
+*.dec
+*.plain

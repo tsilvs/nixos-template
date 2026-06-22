@@ -1,0 +1,27 @@
+name: "Checkout submodules"
+description: >
+  Injects GitHub PAT into submodule HTTPS URLs and fetches them.
+  .gitmodules uses SSH URLs (for local dev); this action overrides to HTTPS
+  at runtime without modifying committed .gitmodules.
+
+inputs:
+  token:
+    description: "GitHub PAT with read access to private submodule repos."
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: "Checkout submodules via HTTPS + PAT"
+      shell: bash
+      env:
+        GH_PAT: ${{ inputs.token }}
+      run: |
+        git submodule init
+        # Override SSH URLs → HTTPS + PAT for CI runner (no SSH key available).
+        # Adjust repo paths to match your actual GitHub org/repos.
+        git config submodule."nix/hosts/example-host".url \
+          https://x-access-token:${GH_PAT}@github.com/OWNER/nix-example-host.git
+        git config submodule."nix/modules".url \
+          https://x-access-token:${GH_PAT}@github.com/OWNER/nix-modules.git
+        git submodule update --init --recursive

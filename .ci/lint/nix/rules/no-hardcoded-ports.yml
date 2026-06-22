@@ -1,0 +1,17 @@
+id: no-hardcoded-ports
+language: nix
+# Catch literal port numbers assigned to port-related attributes in Nix modules.
+# Port numbers belong in variables.nix; modules must reference vars.* or cfg.*.
+#
+# Before: port = 8080;
+# After:  port = vars.myService.port;   or   port = cfg.port;
+rule:
+  pattern: $ATTR = $NUM
+  constraints:
+    ATTR:
+      regex: "^(port|Port|listenPort|bindPort|hostPort|containerPort)$"
+    NUM:
+      regex: '^\d+$'
+message: "$ATTR = $NUM: hardcoded port. Extract to variables.nix and reference via vars.*"
+severity: error
+fix: "$ATTR = cfg.$ATTR"

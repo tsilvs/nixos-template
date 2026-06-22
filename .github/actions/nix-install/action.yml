@@ -1,0 +1,17 @@
+name: "Install Nix"
+description: >
+  Installs Nix via Determinate Systems installer.
+  Enables flakes + nix-command by default. No cachix dependency.
+
+runs:
+  using: composite
+  steps:
+    - name: "Install Nix (Determinate Systems)"
+      shell: bash
+      # --no-confirm        — non-interactive for CI
+      # flakes + nix-command enabled by installer defaults
+      # writes nix bin dir to GITHUB_PATH → available in all subsequent steps
+      run: |
+        curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
+          | sh -s -- install linux --no-confirm
+        . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh

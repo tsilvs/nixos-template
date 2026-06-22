@@ -1,0 +1,30 @@
+name: "Flake check"
+description: >
+  Evaluates flake against the example profile and builds the system toplevel.
+  No copy step — conf/profiles/example/variables.nix is committed.
+  CI always targets the *-example nixosConfiguration.
+
+runs:
+  using: composite
+  steps:
+    # No copy step needed. conf/profiles/example/variables.nix is tracked in git.
+    # The example-host-example configuration imports it directly.
+
+    - name: "Flake check (eval only, no build)"
+      shell: bash
+      run: >
+        nix flake check --no-build
+        --override-input nix-modules ./nix/modules
+
+    - name: "Build example-host toplevel"
+      shell: bash
+      run: >
+        nix build
+        '.#nixosConfigurations.example-host-example.config.system.build.toplevel'
+        --no-link
+        --override-input nix-modules ./nix/modules
+
+    - name: "Optimise Nix store"
+      shell: bash
+      # Deduplicates hard links within the job's store — saves space on self-hosted runners.
+      run: nix store optimise

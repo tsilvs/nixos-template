@@ -1,0 +1,8 @@
+# Replace URLs with your actual submodule repos.
+# SSH URLs for local dev; CI action overrides to HTTPS + PAT at runtime.
+[submodule "nix/hosts/example-host"]
+	path = nix/hosts/example-host
+	url = git@github.com:OWNER/nix-example-host.git
+[submodule "nix/modules"]
+	path = nix/modules
+	url = git@github.com:OWNER/nix-modules.git

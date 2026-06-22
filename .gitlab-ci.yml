@@ -1,0 +1,44 @@
+# .gitlab-ci.yml — GitLab CI equivalent of .github/workflows/ci.yml
+# Installs Nix manually (Determinate Systems); no cachix dependency.
+# Always builds the example profile (example-host-example).
+
+stages:
+  - lint
+  - check
+
+variables:
+  NIX_CONFIG: "experimental-features = nix-command flakes"
+  GIT_SUBMODULE_STRATEGY: recursive  # fetches submodules; set GIT_SUBMODULE_DEPTH if needed
+
+# Shared Nix install snippet — referenced by both jobs.
+.install-nix: &install-nix
+  - apt-get update -qq && apt-get install -y -qq curl xz-utils git
+  - |
+    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
+      | sh -s -- install linux --no-confirm
+  - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+
+lint:
+  stage: lint
+  image: ubuntu:24.04
+  script:
+    - *install-nix
+    - nix run nixpkgs#alejandra -- --check nix/
+    - nix run nixpkgs#deadnix -- --fail nix/
+    - nix run nixpkgs#statix -- check .
+    - nix run nixpkgs#ast-grep -- scan --rule .ci/lint/nix/rules/ nix/
+
+flake-check:
+  stage: check
+  image: ubuntu:24.04
+  script:
+    - *install-nix
+    - >
+      nix flake check --no-build
+      --override-input nix-modules ./nix/modules
+    - >
+      nix build
+      '.#nixosConfigurations.example-host-example.config.system.build.toplevel'
+      --no-link
+      --override-input nix-modules ./nix/modules
+    - nix store optimise

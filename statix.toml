@@ -1,0 +1,30 @@
+# statix.toml — Nix linter configuration.
+# Rules not listed here are ENABLED by default.
+# Ref: https://github.com/nerdypepper/statix
+
+nix_version = '2.4'
+ignore      = ['.direnv']
+
+disabled = [
+  # legacy_let_syntax: allow `let { body = ...; }` form used in some generated/legacy Nix.
+  "legacy_let_syntax",
+
+  # redundant_pattern_bind: allow `{ x, ... }@args` — explicit binding aids readability
+  # when args are passed through to another function.
+  "redundant_pattern_bind",
+]
+
+# Enabled (all others):
+#   bool_comparison       — x == true  →  x
+#   empty_let_in          — let in x   →  x
+#   manual_inherit        — { foo = foo; }  →  inherit foo
+#   manual_inherit_from   — { foo = x.foo; }  →  inherit (x) foo
+#   collapsible_let_in    — nested let..in  →  single let
+#   eta_reduction         — x: f x  →  f
+#   useless_parens        — (x)  →  x
+#   empty_pattern         — { }:  →  _:
+#   unquoted_uri          — http://...  →  "http://..."
+#   empty_inherit         — inherit;  →  (remove)
+#   deprecated_to_path    — builtins.toPath  →  /...
+#   bool_simplification   — if b then true else false  →  b
+#   useless_has_attr      — if x ? y then x.y else d  →  x.y or d

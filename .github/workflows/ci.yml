@@ -1,0 +1,30 @@
+name: "CI — Flake check"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    # ubuntu-latest = ubuntu-24.04 on GitHub-hosted runners.
+    # For local act: act -P ubuntu-latest=catthehacker/ubuntu:act-latest
+    runs-on: ubuntu-latest
+
+    steps:
+      # actions/checkout applies safe.directory patch (CVE-2022-24765),
+      # sets GITHUB_WORKSPACE, injects GITHUB_TOKEN into credential store.
+      - uses: actions/checkout@v4
+        with:
+          submodules: false  # submodules fetched in next step via PAT
+
+      - uses: ./.github/actions/submodules
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - uses: ./.github/actions/nix-install
+
+      - uses: ./.github/actions/lint
+
+      - uses: ./.github/actions/flake-check

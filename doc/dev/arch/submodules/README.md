@@ -9,8 +9,8 @@
 
 Two separate git repos composed via `path:` flake inputs:
 
-- `nix/modules/` — shared logic, independent history (→ `nix-modules` repo)
-- `nix/hosts/<hostname>/` — host wiring, independent history (→ `nix-<hostname>` repo)
+- `nix/modules/` - shared logic, independent history (→ `nix-modules` repo)
+- `nix/hosts/<hostname>/` - host wiring, independent history (→ `nix-<hostname>` repo)
 
 Root `flake.nix` is the composition layer. `nixos-rebuild switch` always runs from repo root.
 

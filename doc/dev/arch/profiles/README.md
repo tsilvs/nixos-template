@@ -6,10 +6,10 @@
 
 <!-- doc -->
 
-`conf/profiles/<name>/variables.nix` — one file per deployment context.
+`conf/profiles/<name>/variables.nix` - one file per deployment context.
 
-- `example` — committed, safe fake values, CI always builds this
-- `<hostname>` — gitignored, real identity values, used on the machine
+- `example` - committed, safe fake values, CI always builds this
+- `<hostname>` - gitignored, real identity values, used on the machine
 
 `flake.nix` enumerates both as named `nixosConfigurations`:
 

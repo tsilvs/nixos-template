@@ -1,18 +1,37 @@
 name: "Install Nix"
 description: >
-  Installs Nix via Determinate Systems installer.
-  Enables flakes + nix-command by default. No cachix dependency.
+  Installs Nix via official installer.
+  Enables flakes + nix-command. No cachix dependency.
 
 runs:
   using: composite
   steps:
-    - name: "Install Nix (Determinate Systems)"
+    - name: "Install Nix (official)"
       shell: bash
-      # --no-confirm        - non-interactive for CI
-      # flakes + nix-command enabled by installer defaults
-      # writes nix bin dir to GITHUB_PATH → available in all subsequent steps
-      # --no-start-daemon  - don't require systemd (Docker/act support)
       run: |
-        curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
-          | sh -s -- install linux --no-confirm --no-start-daemon
-        . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+        set -euo pipefail
+
+        INSTALL_URL="https://nixos.org/nix/install"
+        CURL_OPTS="--proto =https --tlsv1.2 -sSf -L"
+
+        # systemd package installed ≠ systemd running as PID 1.
+        # Docker runs CMD as PID 1, skips init boot → systemctl fails.
+        # Detect: pidof finds running systemd; /run/systemd/system
+        # exists on full-boot OSes (GitHub runners), absent in containers.
+        if pidof systemd >/dev/null 2>&1 || [ -d /run/systemd/system ]; then
+          # multi-user daemon — systemd available, daemon manages /nix/store.
+          # No big-lock permission errors.
+          curl $CURL_OPTS "$INSTALL_URL" | sh -s -- --daemon
+          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+          echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
+          mkdir -p /etc/nix
+          echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+        else
+          # single-user no-daemon — container (Docker/act) without running systemd.
+          # Runs as root inside container → owns /nix → no lock permission issues.
+          curl $CURL_OPTS "$INSTALL_URL" | sh -s -- --no-daemon
+          . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+          echo "$HOME/.nix-profile/bin" >> "$GITHUB_PATH"
+          mkdir -p "$HOME/.config/nix"
+          echo "experimental-features = nix-command flakes" >> "$HOME/.config/nix/nix.conf"
+        fi

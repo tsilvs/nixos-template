@@ -8,7 +8,7 @@ runs:
   using: composite
   steps:
     # No copy step needed. conf/profiles/example/variables.nix is tracked in git.
-    # The example-host-example configuration imports it directly.
+    # The example-host configuration imports it directly.
 
     - name: "Flake check (eval only, no build)"
       shell: bash
@@ -20,7 +20,7 @@ runs:
       shell: bash
       run: >
         nix build
-        '.#nixosConfigurations.example-host-example.config.system.build.toplevel'
+        '.#nixosConfigurations.example-host.config.system.build.toplevel'
         --no-link
         --override-input nix-modules ./nix/modules
 

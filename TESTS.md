@@ -30,7 +30,7 @@ ast-grep scan nix/
 
 nix flake check --no-build --override-input nix-modules ./nix/modules
 
-nix build '.#nixosConfigurations.example-host-example.config.system.build.toplevel' \
+nix build '.#nixosConfigurations.example-host.config.system.build.toplevel' \
  --no-link \
  --override-input nix-modules ./nix/modules
 ```

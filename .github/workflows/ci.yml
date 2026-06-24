@@ -9,7 +9,7 @@ on:
 jobs:
   check:
     # ubuntu-latest = ubuntu-24.04 on GitHub-hosted runners.
-    # For local act: act -P ubuntu-latest=catthehacker/ubuntu:act-latest
+    # For local act: act -P ubuntu-latest=ubuntu:24.04
     runs-on: ubuntu-latest
 
     steps:

@@ -1,6 +1,6 @@
 # .gitlab-ci.yml - GitLab CI equivalent of .github/workflows/ci.yml
 # Installs Nix manually (Determinate Systems); no cachix dependency.
-# Always builds the example profile (example-host-example).
+# Always builds the example profile (example-host).
 
 stages:
   - lint
@@ -38,7 +38,7 @@ flake-check:
       --override-input nix-modules ./nix/modules
     - >
       nix build
-      '.#nixosConfigurations.example-host-example.config.system.build.toplevel'
+      '.#nixosConfigurations.example-host.config.system.build.toplevel'
       --no-link
       --override-input nix-modules ./nix/modules
     - nix store optimise

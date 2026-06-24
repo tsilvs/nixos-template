@@ -23,6 +23,6 @@ runs:
 
     - name: "ast-grep (custom rules)"
       shell: bash
-      # Scans nix/ with project-local structural rules.
-      # Current rules: no-hardcoded-ports (.ci/lint/nix/rules/).
-      run: nix run nixpkgs#ast-grep -- scan --rule .ci/lint/nix/rules/ nix/
+      # Scans nix/ with project-local structural rules (7 rules).
+      # Rules discovered via sgconfig.yml → ruleDirs: .ci/lint/nix/rules/
+      run: nix run nixpkgs#ast-grep -- scan nix/

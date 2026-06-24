@@ -1,0 +1,26 @@
+id: no-with-pkgs
+snapshots:
+  ? |
+    with pkgs; [ hello vim git ]
+  : labels:
+    - source: with pkgs; [ hello vim git ]
+      style: primary
+      start: 0
+      end: 28
+    - source: pkgs
+      style: secondary
+      start: 5
+      end: 9
+  ? |-
+    {
+      environment.systemPackages = with pkgs; [ hello vim git ];
+    }
+  : labels:
+    - source: with pkgs; [ hello vim git ]
+      style: primary
+      start: 33
+      end: 61
+    - source: pkgs
+      style: secondary
+      start: 38
+      end: 42

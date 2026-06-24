@@ -1,0 +1,33 @@
+id: no-hardcoded-ips
+valid:
+  # IP from vars — allowed.
+  - |
+    {
+      networking.ip = vars.serverIp;
+    }
+  # Non-IP string — not an IP literal.
+  - |
+    {
+      services.nginx.bind = "localhost";
+    }
+  # Non-IP integer — not a string.
+  - |
+    {
+      networking.prefixLength = 24;
+    }
+  # IP from cfg — allowed.
+  - |
+    {
+      services.vpn.endpoint = cfg.wgEndpoint;
+    }
+invalid:
+  # Hardcoded IP string.
+  - |
+    {
+      networking.ip = "192.168.1.100";
+    }
+  # Hardcoded gateway IP.
+  - |
+    {
+      networking.defaultGateway = "10.0.0.1";
+    }

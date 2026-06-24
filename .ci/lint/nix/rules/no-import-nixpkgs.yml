@@ -1,0 +1,11 @@
+id: no-import-nixpkgs
+language: nix
+severity: error
+note: >
+  'import <nixpkgs>' uses NIX_PATH (impure channel resolution).
+  In flake context, use inputs.nixpkgs or pkgs from module args.
+rule:
+  all:
+    - kind: spath_expression
+    - regex: "nixpkgs"
+message: "import <nixpkgs> is impure. Use flake inputs.nixpkgs or pkgs arg."

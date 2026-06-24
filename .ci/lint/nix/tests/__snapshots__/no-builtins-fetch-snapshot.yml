@@ -1,0 +1,29 @@
+id: no-builtins-fetch
+snapshots:
+  ? |-
+    builtins.fetchGit {
+      url = "https://github.com/foo/bar.git";
+      ref = "main";
+    }
+  : labels:
+    - source: builtins.fetchGit
+      style: primary
+      start: 0
+      end: 17
+  ? |
+    builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/master.tar.gz"
+  : labels:
+    - source: builtins.fetchTarball
+      style: primary
+      start: 0
+      end: 21
+  ? |
+    builtins.fetchTarball {
+      url = "https://github.com/NixOS/nixpkgs/archive/master.tar.gz";
+      sha256 = "0000000000000000000000000000000000000000000000000000";
+    }
+  : labels:
+    - source: builtins.fetchTarball
+      style: primary
+      start: 0
+      end: 21

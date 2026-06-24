@@ -1,0 +1,13 @@
+id: no-builtins-fetch
+language: nix
+severity: error
+note: >
+  builtins.fetchTarball / builtins.fetchGit are impure in flakes.
+  Use flake inputs or pkgs.fetchurl / pkgs.fetchzip instead.
+rule:
+  all:
+    - kind: select_expression
+    - any:
+        - regex: "builtins\\.fetchTarball"
+        - regex: "builtins\\.fetchGit"
+message: "builtins.fetch* is impure. Use flake inputs or pkgs.fetch*."

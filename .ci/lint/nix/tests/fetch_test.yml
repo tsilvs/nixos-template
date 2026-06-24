@@ -1,0 +1,27 @@
+id: no-builtins-fetch
+valid:
+  # pkgs.fetchurl — allowed.
+  - |
+    pkgs.fetchurl {
+      url = "https://example.com/file.tar.gz";
+      hash = "sha256-...";
+    }
+  # Normal attrset — allowed.
+  - |
+    { foo = "bar"; }
+invalid:
+  # builtins.fetchTarball with URL.
+  - |
+    builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/master.tar.gz"
+  # builtins.fetchTarball with attrset.
+  - |
+    builtins.fetchTarball {
+      url = "https://github.com/NixOS/nixpkgs/archive/master.tar.gz";
+      sha256 = "0000000000000000000000000000000000000000000000000000";
+    }
+  # builtins.fetchGit.
+  - |
+    builtins.fetchGit {
+      url = "https://github.com/foo/bar.git";
+      ref = "main";
+    }

@@ -1,0 +1,23 @@
+id: no-hardcoded-ips
+language: nix
+severity: error
+note: >
+  Catch literal IP addresses in Nix modules.
+  IPs belong in conf/profiles/<host>/variables.nix.
+  Modules must reference vars.*, not hardcode.
+files:
+  - "nix/**/*.nix"
+  - "flake.nix"
+rule:
+  all:
+    - kind: binding
+    - has:
+        kind: string_expression
+        regex: "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}"
+    - not:
+        has:
+          kind: select_expression
+          has:
+            kind: variable_expression
+            regex: "^vars$"
+message: "hardcoded IP. Move to variables.nix, reference via vars.*"

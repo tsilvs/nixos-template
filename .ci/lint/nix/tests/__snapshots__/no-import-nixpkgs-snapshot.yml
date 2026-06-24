@@ -1,0 +1,15 @@
+id: no-import-nixpkgs
+snapshots:
+  ? |
+    import <nixpkgs>
+  : labels:
+    - source: <nixpkgs>
+      style: primary
+      start: 7
+      end: 16
+  import <nixpkgs> { config = { allowUnfree = true; }; }:
+    labels:
+    - source: <nixpkgs>
+      style: primary
+      start: 7
+      end: 16

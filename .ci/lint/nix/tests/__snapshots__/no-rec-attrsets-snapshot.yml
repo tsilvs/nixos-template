@@ -1,0 +1,16 @@
+id: no-rec-attrsets
+snapshots:
+  ? |-
+    rec {
+      foo = 1;
+      bar = foo + 1;
+    }
+  : labels:
+    - source: |-
+        rec {
+          foo = 1;
+          bar = foo + 1;
+        }
+      style: primary
+      start: 0
+      end: 35

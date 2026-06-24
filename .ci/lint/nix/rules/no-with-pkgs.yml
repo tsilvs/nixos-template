@@ -1,0 +1,16 @@
+id: no-with-pkgs
+language: nix
+severity: warning
+note: >
+  'with pkgs;' causes name collisions and makes code hard to trace.
+  Prefer explicit 'pkgs.foo' references.
+files:
+  - "nix/**/*.nix"
+  - "flake.nix"
+rule:
+  all:
+    - kind: with_expression
+    - has:
+        kind: variable_expression
+        regex: "^pkgs$"
+message: "with pkgs; — use explicit pkgs.foo to avoid name collisions"

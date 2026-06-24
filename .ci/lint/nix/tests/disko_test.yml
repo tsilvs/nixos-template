@@ -1,0 +1,20 @@
+id: disko-never-imported
+valid:
+  # Import of default.nix — allowed.
+  - |
+    import ./nix/hosts/example-host/default.nix
+  # Import of non-disko file.
+  - |
+    import ./nix/hosts/example-host/extra.nix
+  # No disko import.
+  - |
+    {
+      imports = [ ./nix/hosts/example-host/default.nix ];
+    }
+invalid:
+  # disko.nix path — forbidden in flake.nix.
+  - |
+    ./nix/hosts/example-host/disko.nix
+  # disko.nix import — forbidden.
+  - |
+    import ./nix/hosts/example-host/disko.nix

@@ -1,0 +1,19 @@
+id: no-with-pkgs
+valid:
+  # Explicit pkgs reference — allowed.
+  - |
+    {
+      environment.systemPackages = [ pkgs.hello pkgs.vim ];
+    }
+  # No with.
+  - |
+    { foo = "bar"; }
+invalid:
+  # with pkgs; — anti-pattern.
+  - |
+    with pkgs; [ hello vim git ]
+  # with pkgs; in attrset.
+  - |
+    {
+      environment.systemPackages = with pkgs; [ hello vim git ];
+    }

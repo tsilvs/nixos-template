@@ -1,0 +1,65 @@
+id: no-hardcoded-ports
+snapshots:
+  ? |
+    {
+      boot.initrd.network.ssh.sshPort = 2222;
+    }
+  : labels:
+    - source: boot.initrd.network.ssh.sshPort = 2222;
+      style: primary
+      start: 4
+      end: 43
+    - source: sshPort
+      style: secondary
+      start: 28
+      end: 35
+    - source: boot.initrd.network.ssh.sshPort
+      style: secondary
+      start: 4
+      end: 35
+    - source: '2222'
+      style: secondary
+      start: 38
+      end: 42
+  ? |-
+    {
+      services.gitea.listenPort = 3000;
+    }
+  : labels:
+    - source: services.gitea.listenPort = 3000;
+      style: primary
+      start: 4
+      end: 37
+    - source: listenPort
+      style: secondary
+      start: 19
+      end: 29
+    - source: services.gitea.listenPort
+      style: secondary
+      start: 4
+      end: 29
+    - source: '3000'
+      style: secondary
+      start: 32
+      end: 36
+  ? |
+    {
+      services.nginx.port = 8080;
+    }
+  : labels:
+    - source: services.nginx.port = 8080;
+      style: primary
+      start: 4
+      end: 31
+    - source: port
+      style: secondary
+      start: 19
+      end: 23
+    - source: services.nginx.port
+      style: secondary
+      start: 4
+      end: 23
+    - source: '8080'
+      style: secondary
+      start: 26
+      end: 30

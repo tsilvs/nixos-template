@@ -1,0 +1,14 @@
+id: disko-never-imported
+language: nix
+severity: error
+note: >
+  disko.nix is provisioning-only (nixos-anywhere).
+  Never imported in flake.nix or nixos-rebuild switch.
+  nixos-anywhere adds disko.nixosModules.disko externally.
+files:
+  - "flake.nix"
+rule:
+  all:
+    - kind: path_expression
+    - regex: "disko\\.nix"
+message: "disko.nix imported in flake.nix. Remove — provisioning-only."

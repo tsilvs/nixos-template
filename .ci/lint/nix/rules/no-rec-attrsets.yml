@@ -1,0 +1,10 @@
+id: no-rec-attrsets
+language: nix
+severity: warning
+note: >
+  'rec' attrsets enable self-referential bindings.
+  Rarely intentional in NixOS modules.
+  Use let..in for forward-references if needed.
+rule:
+  kind: rec_attrset_expression
+message: "rec attrset. Prefer non-recursive; use let..in for forward-refs."

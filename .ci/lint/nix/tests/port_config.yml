@@ -1,0 +1,43 @@
+id: no-hardcoded-ports
+valid:
+  # Port from vars — allowed.
+  - |
+    {
+      services.nginx.port = vars.nginxPort;
+    }
+  # Port from cfg — allowed.
+  - |
+    {
+      services.gitea.listenPort = cfg.giteaPort;
+    }
+  # Non-port attribute with integer — not a port attr.
+  - |
+    {
+      services.nginx.workerCount = 4;
+    }
+  # Deep vars reference — allowed.
+  - |
+    {
+      boot.initrd.network.ssh.sshPort = vars.luks.sshPort;
+    }
+  # cfg nested reference — allowed.
+  - |
+    {
+      services.api.port = cfg.networking.port;
+    }
+invalid:
+  # Hardcoded port integer.
+  - |
+    {
+      services.nginx.port = 8080;
+    }
+  # Hardcoded sshPort integer.
+  - |
+    {
+      boot.initrd.network.ssh.sshPort = 2222;
+    }
+  # Hardcoded listenPort integer.
+  - |
+    {
+      services.gitea.listenPort = 3000;
+    }

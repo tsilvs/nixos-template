@@ -1,55 +1,27 @@
 id: no-hardcoded-ports
 language: nix
-# Catch literal port numbers assigned to port-related attributes in Nix modules.
-# Port numbers belong in variables.nix; modules must reference vars.* or cfg.*.
-#
-# Before: port = 8080;
-# After:  port = vars.myService.port;   or   port = cfg.port;
-#
-# See rule definition docs at: https://ast-grep.github.io/guide/rule-config/atomic-rule.html
-rule:
-  # expected one of:
-  #   atomic:
-  #     `pattern`:   literal pattern, able to capture any `$MATCH` metavariables
-  #     `kind`:      `tree-sitter`-parsed AST kind for the `language`
-  #     `regex`:     regular expression
-  #     `nthChild`:  CSS-like 1-indexed `An+B` number formula to match many child nodes. Can be an object.
-  #     `range`:     Match code by absolute position pointers: {start,end}:{line,column}
-  #   relational:  Select node relative to node matching sub rule
-  #     `inside`:    by a parent
-  #     `has`:       by a child
-  #     `precedes`:  before
-  #     `follows`:   after
-  #   composite:   Select node by one of rules
-  #     `all`:       Match all rules
-  #     `any`:       Match one of rules
-  #     `not`:       Match all except rule
-  #     `matches`:   By rule ID - can compose rules from other rules
-  #   extras:
-  #     stopBy:      ?
-  #     ofRule:      ?
-  #
-  #   examples:
-  #     regex: "^(port|Port|listenPort|bindPort|hostPort|containerPort)$" # ATTR
-  #     regex: '^\d+$' # NUM
-  pattern: $ATTR = $NUM
-message: "$ATTR = $NUM: hardcoded port. Extract to variables.nix and reference via vars.*"
 severity: error
-# `fix` uses metavariables matched from `pattern`
-fix: "$ATTR = cfg.$ATTR" # should probably be `v.$ATTR` or `var.$ATTR`
-
----
-# id: your-rule-name
-# language: nix
-# message: ""
-# severity: error
-# files:
-#   - "**/*.nix"
-# rule:
-#   pattern: "something $MATCH_NAME"
-#   not:
-#     has:
-#       regex: "(any|all|whatever) regex"
-# fix: "anything $MATCH_NAME"
-
----
+note: >
+  Catch literal integer port numbers in Nix modules.
+  Ports belong in conf/profiles/<host>/variables.nix.
+  Modules must reference vars.* or cfg.*, never hardcode.
+files:
+  - "nix/**/*.nix"
+  - "flake.nix"
+rule:
+  all:
+    - kind: binding
+    - has:
+        kind: attrpath
+        has:
+          kind: identifier
+          regex: "^(port|sshPort|listenPort|bindPort|hostPort|containerPort|metricsPort)$"
+    - has:
+        kind: integer_expression
+    - not:
+        has:
+          kind: select_expression
+          has:
+            kind: variable_expression
+            regex: "^(vars|cfg)$"
+message: "hardcoded port. Move to variables.nix, reference via vars.*"

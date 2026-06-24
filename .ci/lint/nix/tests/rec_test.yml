@@ -1,0 +1,22 @@
+id: no-rec-attrsets
+valid:
+  # Plain attrset — allowed.
+  - |
+    {
+      foo = 1;
+      bar = 2;
+    }
+  # let..in for forward reference — allowed.
+  - |
+    let
+      foo = 1;
+    in {
+      bar = foo + 1;
+    }
+invalid:
+  # rec attrset — flagged.
+  - |
+    rec {
+      foo = 1;
+      bar = foo + 1;
+    }

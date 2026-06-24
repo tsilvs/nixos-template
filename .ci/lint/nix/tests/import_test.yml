@@ -1,0 +1,15 @@
+id: no-import-nixpkgs
+valid:
+  # Import of local file — allowed.
+  - |
+    import ./conf/profiles/example/variables.nix
+  # No import.
+  - |
+    { foo = "bar"; }
+invalid:
+  # import <nixpkgs> — impure.
+  - |
+    import <nixpkgs>
+  # import <nixpkgs> with attrset.
+  - |
+    import <nixpkgs> { config = { allowUnfree = true; }; }

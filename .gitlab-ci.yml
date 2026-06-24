@@ -1,5 +1,5 @@
 # .gitlab-ci.yml - GitLab CI equivalent of .github/workflows/ci.yml
-# Installs Nix manually (Determinate Systems); no cachix dependency.
+# Installs Nix manually; no cachix dependency.
 # Always builds the example profile (example-host).
 
 stages:
@@ -11,12 +11,30 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive # fetches submodules; set GIT_SUBMODULE_DEPTH if needed
 
 # Shared Nix install snippet - referenced by both jobs.
+# Mirrors .github/actions/nix-install/action.yml logic.
 .install-nix: &install-nix
   - apt-get update -qq && apt-get install -y -qq curl xz-utils git
   - |
-    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
-      | sh -s -- install linux --no-confirm
-  - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+    set -euo pipefail
+    INSTALL_URL="https://nixos.org/nix/install"
+    CURL_OPTS="--proto =https --tlsv1.2 -sSf -L"
+    # systemd package installed ≠ systemd running as PID 1.
+    # Docker runs CMD as PID 1, skips init boot → systemctl fails.
+    # Detect: pidof finds running systemd; /run/systemd/system
+    # exists on full-boot OSes, absent in containers.
+    EXTRA_CONF="experimental-features = nix-command flakes"
+    if pidof systemd >/dev/null 2>&1 || [ -d /run/systemd/system ]; then
+      # multi-user daemon — systemd available, daemon manages /nix/store.
+      curl $CURL_OPTS "$INSTALL_URL" \
+        | sh -s -- --daemon --extra-conf "$EXTRA_CONF"
+      . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+    else
+      # single-user no-daemon — container without running systemd.
+      # Runs as root inside container → owns /nix → no lock permission issues.
+      curl $CURL_OPTS "$INSTALL_URL" \
+        | sh -s -- --no-daemon --extra-conf "$EXTRA_CONF"
+      . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+    fi
 
 lint:
   stage: lint

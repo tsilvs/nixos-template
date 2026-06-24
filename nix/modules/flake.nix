@@ -12,8 +12,16 @@
 {
   description = "Shared NixOS modules - STUB. Replace with real submodule.";
 
+  # outputs fn receives `self`; stub doesn't need it → discard with `_`.
   outputs = _: {
+    # `nixosModules` is a reserved flake output key — Nix tooling
+    # (nixos-rebuild, flake check) only recognizes this exact name.
+    # Renaming to anything shorter breaks auto-resolution. Path in root flake:
+    #   nix-modules (input alias) → nixosModules (reserved key) → default (bundle convention).
     nixosModules.default = {
+      # Each module is a NixOS module function (takes config/pkgs/... attrs).
+      # Stubs discard args and return empty attrset — no-op at build time.
+      # TODO: Replace `_: {}` with real function calls.
       gocryptfs = _: {};
       hardening = _: {};
       hardware = _: {};

@@ -15,7 +15,7 @@ jobs:
     steps:
       # actions/checkout applies safe.directory patch (CVE-2022-24765),
       # sets GITHUB_WORKSPACE, injects GITHUB_TOKEN into credential store.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: false # submodules fetched in next step via PAT
 

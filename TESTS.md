@@ -24,7 +24,7 @@
 alejandra --check nix/
 deadnix --fail nix/
 statix check .
-ast-grep scan --rule .ci/lint/nix/rules/ nix/
+ast-grep scan nix/
 
 # Flake Check + Build
 

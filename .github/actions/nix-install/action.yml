@@ -21,17 +21,15 @@ runs:
         if pidof systemd >/dev/null 2>&1 || [ -d /run/systemd/system ]; then
           # multi-user daemon — systemd available, daemon manages /nix/store.
           # No big-lock permission errors.
-          curl $CURL_OPTS "$INSTALL_URL" | sh -s -- --daemon
+          curl $CURL_OPTS "$INSTALL_URL" \
+            | sh -s -- --daemon --extra-conf "experimental-features = nix-command flakes"
           . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
           echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
-          mkdir -p /etc/nix
-          echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
         else
           # single-user no-daemon — container (Docker/act) without running systemd.
           # Runs as root inside container → owns /nix → no lock permission issues.
-          curl $CURL_OPTS "$INSTALL_URL" | sh -s -- --no-daemon
+          curl $CURL_OPTS "$INSTALL_URL" \
+            | sh -s -- --no-daemon --extra-conf "experimental-features = nix-command flakes"
           . "$HOME/.nix-profile/etc/profile.d/nix.sh"
           echo "$HOME/.nix-profile/bin" >> "$GITHUB_PATH"
-          mkdir -p "$HOME/.config/nix"
-          echo "experimental-features = nix-command flakes" >> "$HOME/.config/nix/nix.conf"
         fi

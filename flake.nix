@@ -11,7 +11,11 @@
   outputs = { self, nixpkgs, nix-modules, sops-nix, ... }:
     let
       # Alias for brevity.
+      # Path: nix-modules(input alias) → nixosModules(reserved flake output key
+      #   Nix tooling auto-resolves only `nixosModules.<name>`; renaming breaks it)
+      #   → default(convention: all modules bundled under one key).
       m = nix-modules.nixosModules.default;
+      # TODO: replace ./nix/modules stub with real git submodule (github:OWNER/nix-modules).
 
       # Shared module list - identical across all host configurations.
       # disko.nix intentionally absent: used by nixos-anywhere only, never by nixos-rebuild.
@@ -37,11 +41,11 @@
       #
       # secretsFile is passed as specialArg so default.nix can reference it
       # without constructing paths relative to nix/hosts/<hostname>/.
-      mkHost = hostname: profile:
+      mkHost = hostname:
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            vars        = import ./conf/profiles/${profile}/variables.nix;
+            vars = import ./conf/profiles/${hostname}/variables.nix;
             secretsFile = ./conf/secrets/${hostname}/secrets.yaml;
           };
           modules = hostModules hostname;
@@ -50,14 +54,13 @@
     {
       # ── Configurations ────────────────────────────────────────────────────
       # Convention:
-      #   <hostname>            - real profile (gitignored variables.nix, for the machine itself)
-      #   <hostname>-example    - example profile (committed, CI build target)
+      #   <hostname>                        - real profile (gitignored variables.nix, for the machine itself)
+      #   example, <hostname>-example       - example profile (committed, CI build target)
       #
       # Add one pair of lines per host.
       # ─────────────────────────────────────────────────────────────────────
       nixosConfigurations = {
-        example-host         = mkHost "example-host" "example-host"; # gitignored vars
-        example-host-example = mkHost "example-host" "example";      # committed vars, CI
+        example-host         = mkHost "example-host"; # committed vars, CI
       };
 
       # ── Module export ─────────────────────────────────────────────────────

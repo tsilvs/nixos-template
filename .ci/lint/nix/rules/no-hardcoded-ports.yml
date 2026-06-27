@@ -8,6 +8,8 @@ note: >
 files:
   - "nix/**/*.nix"
   - "flake.nix"
+ignores:
+  - "**/conf/variables.nix"
 rule:
   all:
     - kind: binding

@@ -37,7 +37,7 @@
       # Build a NixOS configuration for a given hostname + profile.
       #
       # hostname - subdirectory under nix/hosts/
-      # profile  - subdirectory under conf/profiles/  (must contain variables.nix)
+      # profile  - subdirectory under conf/  (must contain variables.nix and secrets/secrets.yaml)
       #
       # secretsFile is passed as specialArg so default.nix can reference it
       # without constructing paths relative to nix/hosts/<hostname>/.
@@ -45,8 +45,8 @@
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            vars = import ./conf/profiles/${hostname}/variables.nix;
-            secretsFile = ./conf/secrets/${hostname}/secrets.yaml;
+            vars = import ./conf/${hostname}/variables.nix;
+            secretsFile = ./conf/${hostname}/secrets/secrets.yaml;
           };
           modules = hostModules hostname;
         };

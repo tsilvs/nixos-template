@@ -1,14 +1,14 @@
-# conf/example-host/variables.nix
+# nix/hosts/example-host/conf/variables.nix
 # ─────────────────────────────────────────────────────────────────────────────
 # COMMITTED EXAMPLE PROFILE - safe fake values only.
 # Used by CI (builds nixosConfigurations.example-host).
 # Schema reference for creating real host profiles.
 #
 # To create a real profile:
-#   mkdir -p conf/<hostname>/secrets
-#   cp conf/example-host/variables.nix conf/<hostname>/variables.nix
+#   mkdir -p nix/hosts/<hostname>/conf/secrets
+#   cp nix/hosts/example-host/conf/variables.nix nix/hosts/<hostname>/conf/variables.nix
 #   # edit: fill real hostname, usernames, IPs, roles
-#   # add secrets: sops conf/<hostname>/secrets/secrets.yaml
+#   # add secrets: sops nix/hosts/<hostname>/conf/secrets/secrets.yaml
 # ─────────────────────────────────────────────────────────────────────────────
 {
   # ── Network identity ──────────────────────────────────────────────────────

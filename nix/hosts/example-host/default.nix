@@ -7,7 +7,7 @@
 # secretsFile injected as specialArg from root flake.nix so paths resolve
 # relative to the flake root, not relative to this file.
 # ─────────────────────────────────────────────────────────────────────────────
-{secretsFile, ...}: {
+{lib, secretsFile, vars, ...}: {
   system.stateVersion = "25.11";
 
   # Minimal stubs required for nixosConfigurations eval in CI.
@@ -31,10 +31,11 @@
         # Declare each secret used in variables.nix.
         # Path: /run/secrets/<name>  (default, owned root:root 0400)
       };
+    } // lib.attrsets.optionalAttrs vars.vpn.enable {
       wg-private-key = {mode = "0400";};
+    } // lib.attrsets.optionalAttrs vars.luks.sshUnlock {
       initrd-host-key = {
         # initrd SSH host key for LUKS remote unlock.
-        # Only relevant when vars.luks.sshUnlock = true.
         path = "/etc/secrets/initrd/hostkey.ed25519";
         mode = "0400";
       };

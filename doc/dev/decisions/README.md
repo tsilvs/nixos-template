@@ -7,6 +7,7 @@
 [dev/arch/submodules]: ../arch/submodules/README.md "Submodule layout"
 [dev/arch/principles]: ../arch/principles/README.md "Design principles"
 [dev/arch/net]: ../arch/net/README.md "Network design"
+[dev/arch/ci]: ../arch/ci/README.md "CI architecture"
 [use/secrets]: ../../use/secrets/README.md "How to use: secrets"
 [todo/0-arch]: todo/0-arch/INDEX.md "Architecture TODOs"
 [todo/1-ci]: todo/1-ci/INDEX.md "CI TODOs"
@@ -30,15 +31,15 @@
 | 0.Arch | Undefined | ONLY root `flake` as entry point                        | [TODO][todo/0-arch] | [ ] TODO | [doc]                      |
 | 1.CI   | High      | example profile                                         | [TODO]              | [х] DONE | [doc]                      |
 | 1.CI   | High?     | `ubuntu-latest`                                         | [TODO]              | [x] DONE | [doc]                      |
-| 1.CI   | High      | no `cachix`                                             | [TODO][todo/1-ci]   | [ ] TODO | [doc]                      |
-| 1.CI   | High      | Plain `nix` installer                                   | [TODO][todo/1-ci]   | [ ] TODO | [doc]                      |
-| 1.CI   | High      | `statix`                                                | [TODO][todo/1-ci]   | [ ] TODO | [doc]                      |
-| 1.CI   | Medium    | `alejandra`                                             | [TODO][todo/1-ci]   | [ ] TODO | [doc]                      |
-| 1.CI   | High      | `ast-grep` custom rules                                 | [TODO][todo/1-ci]   | [ ] TODO | [doc]                      |
-| 1.CI   | Low       | GitLab CI equivalent                                    | [TODO][todo/1-ci]   | [ ] TODO | [doc]                      |
-| 1.CI   | High      | `deadnix` unused code check                             | [TODO][todo/1-ci]   | [ ] TODO | [doc]                      |
+| 1.CI   | High      | no `cachix`                                             | ~~TODO~~            | [x] DONE | [doc][dev/arch/ci]         |
+| 1.CI   | High      | Plain `nix` installer                                   | ~~TODO~~            | [x] DONE | [doc][dev/arch/ci]         |
+| 1.CI   | High      | `statix`                                                | ~~TODO~~            | [x] DONE | [doc][dev/arch/ci]         |
+| 1.CI   | Medium    | `alejandra`                                             | ~~TODO~~            | [x] DONE | [doc][dev/arch/ci]         |
+| 1.CI   | High      | `ast-grep` custom rules                                 | ~~TODO~~            | [x] DONE | [doc][dev/arch/ci]         |
+| 1.CI   | Low       | GitLab CI equivalent                                    | ~~TODO~~            | [x] DONE | [doc][dev/arch/ci]         |
+| 1.CI   | High      | `deadnix` unused code check                             | ~~TODO~~            | [x] DONE | [doc][dev/arch/ci]         |
 | 1.CI   | Low       | `nixpkgs-lint` integration                              | [TODO][todo/1-ci]   | [ ] TODO | [doc]                      |
-| 1.CI   | Low       | `nix store optimise` final step                         | [TODO][todo/1-ci]   | [ ] TODO | [doc]                      |
+| 1.CI   | Low       | `nix store optimise` final step                         | ~~TODO~~            | [x] DONE | [doc][dev/arch/ci]         |
 | 2.Sec  | Medium    | SSH cipher policy: widen for compat                     | [TODO][todo/2-sec]  | [ ] TODO | [doc]                      |
 | 3.Net  | High      | Network unit name: eval-time assertion                  | [TODO][todo/3-net]  | [ ] TODO | [doc]                      |
 | 3.Net  | High      | Firewall: UDP + range support (not just TCP)            | [TODO][todo/3-net]  | [ ] TODO | [doc]                      |

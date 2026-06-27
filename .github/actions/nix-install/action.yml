@@ -11,25 +11,39 @@ runs:
       run: |
         set -euo pipefail
 
-        INSTALL_URL="https://nixos.org/nix/install"
-        CURL_OPTS="--proto =https --tlsv1.2 -sSf -L"
+        # Resolve latest Nix version from install redirect.
+        NIX_VERSION=$(curl --proto '=https' --tlsv1.2 -sSf \
+          -o /dev/null -w '%{redirect_url}' \
+          https://nixos.org/nix/install \
+          | grep -oP 'nix-\K[0-9]+\.[0-9]+\.[0-9]+' \
+          || echo "2.34.7")
+        ARCH="x86_64-linux"
+        TARBALL_URL="https://releases.nixos.org/nix/nix-${NIX_VERSION}/nix-${NIX_VERSION}-${ARCH}.tar.xz"
+        TMPDIR="$(mktemp -d)"
 
-        # systemd package installed ≠ systemd running as PID 1.
-        # Docker runs CMD as PID 1, skips init boot → systemctl fails.
-        # Detect: pidof finds running systemd; /run/systemd/system
-        # exists on full-boot OSes (GitHub runners), absent in containers.
-        if pidof systemd >/dev/null 2>&1 || [ -d /run/systemd/system ]; then
-          # multi-user daemon — systemd available, daemon manages /nix/store.
-          # No big-lock permission errors.
-          curl $CURL_OPTS "$INSTALL_URL" \
-            | sh -s -- --daemon --extra-conf "experimental-features = nix-command flakes"
-          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-          echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
-        else
-          # single-user no-daemon — container (Docker/act) without running systemd.
-          # Runs as root inside container → owns /nix → no lock permission issues.
-          curl $CURL_OPTS "$INSTALL_URL" \
-            | sh -s -- --no-daemon --extra-conf "experimental-features = nix-command flakes"
-          . "$HOME/.nix-profile/etc/profile.d/nix.sh"
-          echo "$HOME/.nix-profile/bin" >> "$GITHUB_PATH"
-        fi
+        echo "Downloading Nix ${NIX_VERSION}..."
+        curl --proto '=https' --tlsv1.2 -sSfL "$TARBALL_URL" | tar -xJ -C "$TMPDIR"
+        UNPACK="$TMPDIR/nix-${NIX_VERSION}-${ARCH}"
+
+        # Create store and copy Nix closure — skip nix-env profile build (OOMs in constrained containers).
+        sudo mkdir -p /nix/store /nix/var
+        sudo cp -a "$UNPACK"/store/* /nix/store/
+        sudo chown -R $(id -u):$(id -g) /nix/store /nix/var
+        rm -rf "$TMPDIR"
+
+        # Ensure the nix db directory exists (nix run requires it)
+        mkdir -p /nix/var/nix/db
+
+        # Write nix.conf before any nix invocation.
+        sudo mkdir -p /etc/nix
+        printf 'experimental-features = nix-command flakes\nbuild-users-group =\n' | sudo tee /etc/nix/nix.conf > /dev/null
+
+        # Find nix binary directly in store (no profile build needed).
+        NIX_BIN=$(find /nix/store -maxdepth 3 -name nix -type f -path '*/bin/nix' 2>/dev/null | head -1)
+        [ -n "$NIX_BIN" ] || { echo "FAIL: nix binary not found after install"; exit 1; }
+        NIX_BIN_DIR="$(dirname "$NIX_BIN")"
+        sudo ln -sf "$NIX_BIN" /usr/local/bin/nix
+
+        # GITHUB_ENV survives composite action boundaries (GITHUB_PATH may not).
+        echo "$NIX_BIN_DIR" >> "$GITHUB_PATH"
+        echo "PATH=$NIX_BIN_DIR:$PATH" >> "$GITHUB_ENV"

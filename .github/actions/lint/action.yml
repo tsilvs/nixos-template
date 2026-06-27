@@ -11,18 +11,18 @@ runs:
   steps:
     - name: "alejandra (format check)"
       shell: bash
-      run: nix run nixpkgs#alejandra -- --check nix/
+      run: sudo nix run nixpkgs#alejandra -- --check nix/
 
     - name: "deadnix (unused bindings)"
       shell: bash
-      run: nix run nixpkgs#deadnix -- --fail nix/
+      run: sudo nix run nixpkgs#deadnix -- --fail nix/
 
     - name: "statix (idiomatic Nix)"
       shell: bash
-      run: nix run nixpkgs#statix -- check .
+      run: sudo nix run nixpkgs#statix -- check .
 
     - name: "ast-grep (custom rules)"
       shell: bash
       # Scans nix/ with project-local structural rules (7 rules).
       # Rules discovered via sgconfig.yml → ruleDirs: .ci/lint/nix/rules/
-      run: nix run nixpkgs#ast-grep -- scan nix/
+      run: sudo nix run nixpkgs#ast-grep -- scan nix/

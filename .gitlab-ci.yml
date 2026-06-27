@@ -22,19 +22,26 @@ variables:
     # Docker runs CMD as PID 1, skips init boot → systemctl fails.
     # Detect: pidof finds running systemd; /run/systemd/system
     # exists on full-boot OSes, absent in containers.
-    EXTRA_CONF="experimental-features = nix-command flakes"
+    # --nix-extra-conf-file takes a file path, not inline text.
+    EXTRA_CONF_FILE="$(mktemp)"
+    echo "experimental-features = nix-command flakes" > "$EXTRA_CONF_FILE"
     if pidof systemd >/dev/null 2>&1 || [ -d /run/systemd/system ]; then
       # multi-user daemon — systemd available, daemon manages /nix/store.
       curl $CURL_OPTS "$INSTALL_URL" \
-        | sh -s -- --daemon --extra-conf "$EXTRA_CONF"
-      . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+        | sh -s -- --daemon --yes --nix-extra-conf-file "$EXTRA_CONF_FILE"
     else
       # single-user no-daemon — container without running systemd.
       # Runs as root inside container → owns /nix → no lock permission issues.
       curl $CURL_OPTS "$INSTALL_URL" \
-        | sh -s -- --no-daemon --extra-conf "$EXTRA_CONF"
-      . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+        | sh -s -- --no-daemon --yes --nix-extra-conf-file "$EXTRA_CONF_FILE"
     fi
+    rm -f "$EXTRA_CONF_FILE"
+    # Profile not built on fresh install → no profile.d/ scripts.
+    # Find nix binary in store directly; fall back to profile paths.
+    NIX_BIN_DIR=$(ls -d /nix/store/*nix-*/bin 2>/dev/null | head -1)
+    [ -n "$NIX_BIN_DIR" ] && export PATH="$NIX_BIN_DIR:$PATH"
+    export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$PATH"
+    # NIX_CONFIG env var above provides runtime config fallback.
 
 lint:
   stage: lint

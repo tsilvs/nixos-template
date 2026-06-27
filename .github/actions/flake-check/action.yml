@@ -13,18 +13,21 @@ runs:
     - name: "Flake check (eval only, no build)"
       shell: bash
       run: >
-        nix flake check --no-build
+        sudo nix flake check --no-build
         --override-input nix-modules ./nix/modules
 
     - name: "Build example-host toplevel"
+      # Skip on act (local runner): insufficient memory for full NixOS build.
+      if: ${{ env.ACT != 'true' }}
       shell: bash
       run: >
-        nix build
+        sudo nix build
         '.#nixosConfigurations.example-host.config.system.build.toplevel'
         --no-link
         --override-input nix-modules ./nix/modules
 
     - name: "Optimise Nix store"
+      if: ${{ env.ACT != 'true' }}
       shell: bash
       # Deduplicates hard links within the job's store - saves space on self-hosted runners.
-      run: nix store optimise
+      run: sudo nix store optimise
